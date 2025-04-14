@@ -1,3 +1,7 @@
+'use strict';
+
+import mysql from '../config/database/database.config.js'
+
 const getLocalTimestamp = () => {
   const now = new Date();
   const options = {
@@ -13,8 +17,25 @@ const getLocalTimestamp = () => {
   return Intl.DateTimeFormat("en-IN", options).format(now);
 };
 
+const CustomMessage = (errorCode, customMessage, error) => {
+  return { errorCode, customMessage, error };
+};
+
+const GenerateOtp = () => {
+  return String(Math.floor(Math.random() * 10000)).padStart(4, 0);
+};
+
+const SetTimeZone = async (req, res, next) => {
+  
+  await mysql.query("SET time_zone = '+05:30';"); 
+  next();
+};
+
 const customUtility = {
   getLocalTimestamp,
+  CustomMessage,
+  GenerateOtp,
+  SetTimeZone,
 };
 
 export default customUtility;

@@ -5,13 +5,16 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mysql from "./config/database/database.config.js";
 import logger from "./utility/logger.utility.js";
+import UserRouter from "./routes/user.route.js";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
+app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(express.urlencoded({ extended: false }));
+app.use('/user',UserRouter)
 
 const mySqlDatabaseConnection = async () => {
   try {
