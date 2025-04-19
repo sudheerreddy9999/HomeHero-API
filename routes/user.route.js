@@ -18,7 +18,7 @@ Router.post("/login",AuthValidation.loginValidation, AuthController.GetUserContr
 Router.post("/google/login", AuthController.GetGoogleAuthController);
 Router.post("/register", UserController.RegisterNewUserController);
 Router.get("/registerOtp", OtpController.InsertOtp);
-Router.get("/verifyOtp", OtpController.VerifyOtpController);
+Router.get("/verifyOtp", AuthController.VerifyOtpController);
 
 
 Router.use(UserJwtMiddleWare.VerifyToken);

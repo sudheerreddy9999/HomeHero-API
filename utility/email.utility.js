@@ -24,7 +24,7 @@ const SendEmail = async (toMail,subject,body) => {
     return data;
   } catch (error) {
     logger.error({ sendEmail: error.message });
-    throw new error(error.message);
+    throw new Error(error.message);
   }
 };
 

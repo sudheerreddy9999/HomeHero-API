@@ -22,7 +22,7 @@ const CustomMessage = (errorCode, customMessage, error) => {
 };
 
 const GenerateOtp = () => {
-  return String(Math.floor(Math.random() * 10000)).padStart(4, 0);
+  return String(Math.floor(Math.random() * 100000)).padStart(5, 0);
 };
 
 const SetTimeZone = async (req, res, next) => {
