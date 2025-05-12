@@ -22,5 +22,8 @@ Router.get("/verifyOtp", AuthController.VerifyOtpController);
 
 
 Router.use(UserJwtMiddleWare.VerifyToken);
+Router.get("/details",UserController.GetUserDetailsContoller)
+
+
 
 export default Router;

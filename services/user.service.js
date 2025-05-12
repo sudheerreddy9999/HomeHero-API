@@ -6,6 +6,7 @@ import logger from "../utility/logger.utility.js";
 import customUtility from "../utility/custom.utility.js";
 import UserJwtMiddleWare from "../middlewares/jwt..usermiddleware.js";
 import SendEmail from "../utility/email.utility.js";
+
 import EmailTemplates from "../config/app/email.config.js";
 const { GenerateToken } = UserJwtMiddleWare;
 
@@ -56,5 +57,19 @@ const RegisterNewUserService = async (request) => {
   }
 };
 
-const UserService = { RegisterNewUserService };
+const GetUserDeatilsService = async (request)=>{
+  try {
+    const email = request.email
+    const data = await AuthDTO.GetUserDTO(email,null);
+    if(!data.length>0){
+      return CustomMessage(404,"User Not Found");
+    }
+    return data;
+  } catch (error) {
+    logger.error({GetUserDeatilsService:error.message});  
+    throw new Error(error.message)
+  }
+}
+
+const UserService = { RegisterNewUserService,GetUserDeatilsService };
 export default UserService;

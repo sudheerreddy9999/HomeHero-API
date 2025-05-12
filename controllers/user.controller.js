@@ -17,5 +17,17 @@ const RegisterNewUserController = async (request, response) => {
   }
 };
 
-const UserController = { RegisterNewUserController };
+const GetUserDetailsContoller = async(request,response)=>{
+  try {
+    const data = await UserService.GetUserDeatilsService(request);
+    if(data?.errorCode){
+      return response.status(data.errorCode).json({message:data.customMessage})
+    }
+    return response.status(200).json({data:data})
+  } catch (error) {
+    return response.status(500).json({message:"Internal Server Error",})
+  }
+}
+
+const UserController = { RegisterNewUserController,GetUserDetailsContoller };
 export default UserController;

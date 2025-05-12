@@ -27,6 +27,7 @@ const VerifyToken = async (request, response, next) => {
     }
     token = request.get("Authorization").split(" ")[1];
     const decodedToken = jwt.verify(token, JWT_SECRETKEY_USER);
+    request.email = decodedToken.email;
     next();
   } catch (error) {
     logger.error(error.message);
