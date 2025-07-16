@@ -8,7 +8,7 @@ config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const chroma = new ChromaClient({
-  baseUrl: "https://chroma-1-0-16-dev48.onrender.com/api/v2",
+  baseUrl: "https://chroma-latest-zix2.onrender.com/api/v2",
 });
 
 const contentFile = "data/homehero-content.json";

@@ -13,7 +13,7 @@ const EmbedAndServiceController = async (request, response) => {
     return response.status(200).json({ message: "Embedding and service completed successfully" });
   } catch (error) {
     logger.error({ EmbedAndServiceController: error.message });
-    return response.status(500).json({ message: "Internal Server Error", error: error.message });
+    return response.status(500).json({ message: "Internal Server Error", error: error.message,sudher:"sudheer " });
   }
 }
 
