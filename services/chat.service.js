@@ -7,49 +7,61 @@ import logger from "../utility/logger.utility.js";
 
 dotenv.config();
 
-// ✅ Initialize Pinecone
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY,
-});
-
-// ✅ Get your Pinecone index
+// Setup Pinecone
+const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
 const index = pinecone.index(process.env.PINECONE_INDEX_NAME || "homehero");
 
-// ✅ Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Setup OpenAI
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const QueryServices = async (query) => {
   try {
-    // 🔍 Step 1: Generate embedding from the user query
+    // Step 1: Get the embedding of the question
     const embeddingRes = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: query,
     });
 
     let embedding = embeddingRes.data[0].embedding;
+    embedding = embedding.slice(0, 1024); // Trim if needed
 
-    // ✂️ Step 2: Slice if your index is 1024-dimensional
-    embedding = embedding.slice(0, 1024);
-
-    // 🔎 Step 3: Query Pinecone for nearest match
+    // Step 2: Search Pinecone for similar documents
     const result = await index.query({
-      topK: 1,
+      topK: 3,
       vector: embedding,
       includeMetadata: true,
     });
 
-    const match = result.matches?.[0];
-
-    if (!match) {
-      return "Sorry, I couldn't find any relevant service.";
+    const matches = result.matches || [];
+    if (matches.length === 0) {
+      return "I couldn't find relevant information for your question.";
     }
 
-    return match.metadata?.content || "No relevant content found.";
+    // Step 3: Build context from top results
+    const context = matches
+      .map((match, i) => `${i + 1}. ${match.metadata?.content || match.metadata?.title || "Unknown"}`)
+      .join("\n");
+
+    // Step 4: Ask GPT to answer based on context
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful assistant for a home services platform. Use the context provided to answer user questions.",
+        },
+        {
+          role: "user",
+          content: `Answer the following question using the context below:\n\nContext:\n${context}\n\nQuestion: ${query}`,
+        },
+      ],
+    });
+
+    const answer = completion.choices[0].message.content;
+    return answer;
   } catch (error) {
     logger.error({ queryServices: error.message });
-    throw new Error("❌ Failed to query services");
+    throw new Error("❌ Failed to generate answer");
   }
 };
 
