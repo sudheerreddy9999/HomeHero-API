@@ -6,8 +6,7 @@
   "main": "server.js",
   "scripts": {
     "local": "nodemon server.js",
-    "start": "node server.js",
-    "embed": "node services/embed.service.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
