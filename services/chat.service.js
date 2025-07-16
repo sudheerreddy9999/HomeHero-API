@@ -1,40 +1,55 @@
 "use strict";
 
-import { ChromaClient } from "chromadb";
-import { OpenAI } from "openai";
 import dotenv from "dotenv";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { OpenAI } from "openai";
 import logger from "../utility/logger.utility.js";
 
 dotenv.config();
-console.log("ChromaDB Base URL:", process.env.CHROMA_BASE_URL);
-// Connect to ChromaDB hosted on Render
-const chroma = new ChromaClient({
-  baseUrl: process.env.CHROMA_BASE_URL || "https://chroma-1-0-16-dev48.onrender.com/api/v2",
+
+// ✅ Initialize Pinecone
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY,
 });
 
-// OpenAI config
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// ✅ Get your Pinecone index
+const index = pinecone.index(process.env.PINECONE_INDEX_NAME || "homehero");
+
+// ✅ Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const QueryServices = async (query) => {
   try {
-    const collection = await chroma.getCollection({ name: "homehero" });
-    console.log(collection,"collection value s ")
+    // 🔍 Step 1: Generate embedding from the user query
     const embeddingRes = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: query,
     });
 
-    const embedding = embeddingRes.data[0].embedding;
+    let embedding = embeddingRes.data[0].embedding;
 
-    const results = await collection.query({
-      queryEmbeddings: [embedding],
-      nResults: 1,
+    // ✂️ Step 2: Slice if your index is 1024-dimensional
+    embedding = embedding.slice(0, 1024);
+
+    // 🔎 Step 3: Query Pinecone for nearest match
+    const result = await index.query({
+      topK: 1,
+      vector: embedding,
+      includeMetadata: true,
     });
 
-    return results.documents[0][0];
+    const match = result.matches?.[0];
+
+    if (!match) {
+      return "Sorry, I couldn't find any relevant service.";
+    }
+
+    return match.metadata?.content || "No relevant content found.";
   } catch (error) {
     logger.error({ queryServices: error.message });
-    throw new Error("Failed to query services");
+    throw new Error("❌ Failed to query services");
   }
 };
 

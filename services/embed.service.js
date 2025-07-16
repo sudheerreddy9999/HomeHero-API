@@ -1,53 +1,60 @@
-import { config } from "dotenv";
-import { OpenAI } from "openai";
+import dotenv from "dotenv";
 import fs from "fs";
-import { ChromaClient } from "chromadb";
-import logger from "../utility/logger.utility.js";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { OpenAI } from "openai";
 
-config();
+dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const chroma = new ChromaClient({
-  baseUrl: "https://chroma-latest-zix2.onrender.com/api/v2",
+// Init OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-const contentFile = "data/homehero-content.json";
-const serviceData = JSON.parse(fs.readFileSync(contentFile, "utf8"));
+// Init Pinecone
+const pinecone = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY,
+});
 
-export const embedAndService = async () => {
+const index = pinecone.index(process.env.PINECONE_INDEX_NAME || "homehero");
+
+// Load data
+const data = JSON.parse(fs.readFileSync("data/homehero-content.json", "utf8"));
+
+// Embed and upsert
+const  embedAndStore=async()=> {
   try {
-    const collection = await chroma.getOrCreateCollection({
-      name: "homehero",
-      embeddingFunction: null,
-    });
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
 
-    for (let i = 0; i < serviceData.length; i++) {
-      const item = serviceData[i];
-
-      const embeddingResponse = await openai.embeddings.create({
-        model: "text-embedding-3-small",
+      const embeddingRes = await openai.embeddings.create({
+        model: "text-embedding-3-small", // 1536-dim output
         input: item.content,
       });
 
-      const embedding = embeddingResponse.data[0].embedding;
+      let fullEmbedding = embeddingRes.data[0].embedding;
 
-      await collection.add({
-        ids: [`item-${i}`],
-        documents: [item.content],
-        embeddings: [embedding],
-        metadatas: [item],
-      });
+      // ✅ Truncate to match index dimension (1024)
+      const embedding = fullEmbedding.slice(0, 1024);
 
-      console.log(`✅ Embedded: ${item.content}`);
+      await index.upsert([
+        {
+          id: `item-${i}`,
+          values: embedding,
+          metadata: {
+            ...item,
+          },
+        },
+      ]);
+
+      console.log(`✅ Stored: ${item.content}`);
     }
-
-    console.log("🎉 All items embedded and stored in Chroma.");
-    return "Embedding and storage complete.";
+    return "All items embedded and stored successfully!";
+    console.log("🎉 All data embedded and upserted to Pinecone.");
   } catch (error) {
-    logger.error("Error in embedAndService:", error);
-    throw error;
+    console.error("❌ Error embedding and storing:", error);
   }
-};
+}
 
-const embedService = { embedAndService };
+const embedService = {embedAndStore};
+
 export default embedService;
