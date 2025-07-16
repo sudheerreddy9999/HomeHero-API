@@ -18,19 +18,24 @@ const RegisterOtpService = async (request) => {
     // if (verifyUser.length > 0)
     //   return CustomMessage(409, "User with this email is already avalilable");
     const checkOtpExists = await OtpDto.VerifyOtp(email,AppConfig.OTP_TYPES.REGISTER);
+    let otp;
     if(checkOtpExists.length>0){
-        return CustomMessage(409,"Otp Already generated Successfully")
+       // return CustomMessage(409,"Otp Already generated Successfully")
+       otp = checkOtpExists[0].otp
     }
-    const otp = GenerateOtp();
-    const data = await OtpDto.InsertOtpDTO(
+    else{
+    otp = GenerateOtp();
+    
+     await OtpDto.InsertOtpDTO(
       otp,
       null,
       email,
       AppConfig.OTP_TYPES.REGISTER
     );
+  }
     const template = EmailTemplates.OTP_TEMPLATE(email.split("@")[0], otp);
     SendEmail(email, template.subject, template.body);
-    return data;
+    return true;
   } catch (error) {
     logger.error({ RegisterOtpService: error.message });
     throw new Error(error.message);
