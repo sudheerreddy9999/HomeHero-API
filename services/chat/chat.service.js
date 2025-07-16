@@ -3,29 +3,22 @@
 import dotenv from "dotenv";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { OpenAI } from "openai";
-import logger from "../utility/logger.utility.js";
+import logger from "../../utility/logger.utility.js";
 
 dotenv.config();
-
-// Setup Pinecone
 const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
 const index = pinecone.index(process.env.PINECONE_INDEX_NAME || "homehero");
-
-// Setup OpenAI
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const QueryServices = async (query) => {
   try {
-    // Step 1: Get the embedding of the question
     const embeddingRes = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: query,
     });
 
     let embedding = embeddingRes.data[0].embedding;
-    embedding = embedding.slice(0, 1024); // Trim if needed
-
-    // Step 2: Search Pinecone for similar documents
+    embedding = embedding.slice(0, 1024);
     const result = await index.query({
       topK: 3,
       vector: embedding,
@@ -61,7 +54,7 @@ const QueryServices = async (query) => {
     return answer;
   } catch (error) {
     logger.error({ queryServices: error.message });
-    throw new Error("❌ Failed to generate answer");
+    throw new Error(" Failed to generate answer");
   }
 };
 

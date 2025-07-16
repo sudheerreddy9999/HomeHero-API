@@ -1,15 +1,10 @@
 "use strict"
-import logger from "../utility/logger.utility.js";
-import embedService from "../services/embed.service.js";
+import logger from "../../utility/logger.utility.js";
+import embedService from "../../services/chat/embed.service.js";
 
 const EmbedAndServiceController = async (request, response) => {
   try {
-    // const { url } = request.body;
-    // if (!url) {
-    //   return response.status(400).json({ message: "URL is required" });
-    // }
-    
-    await embedService.embedAndService();
+    await embedService.embedAndStore();
     return response.status(200).json({ message: "Embedding and service completed successfully" });
   } catch (error) {
     logger.error({ EmbedAndServiceController: error.message });

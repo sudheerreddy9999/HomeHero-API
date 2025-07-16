@@ -1,6 +1,6 @@
 "use strict";
-import scrapeService from "../services/scrape.service.js";
-import logger from "../utility/logger.utility.js";
+import scrapeService from "../../services/chat/scrape.service.js";
+import logger from "../../utility/logger.utility.js";
 
 const ScrapeController = async (request, response) => {
     try {

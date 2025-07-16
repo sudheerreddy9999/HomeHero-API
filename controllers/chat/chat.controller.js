@@ -1,6 +1,6 @@
 "use strict"
-import logger from "../utility/logger.utility.js";
-import ChatService from "../services/chat.service.js";
+import logger from "../../utility/logger.utility.js";
+import ChatService from "../../services/chat/chat.service.js";
 
 const QueryServicesController = async (request, response) => {
   try {
