@@ -10,6 +10,7 @@ import customUtility from "../utility/custom.utility.js";
 import AuthValidation from "../middlewares/validators/auth.validation.js";
 import ScrapingValidation from "../middlewares/validators/scrape.validation.js"
 import ChatController from "../controllers/chat.controller.js";
+import EmbedController from "../controllers/embed.controller.js";
 
 
 
@@ -24,6 +25,7 @@ Router.get("/registerOtp", OtpController.InsertOtp);
 Router.get("/verifyOtp", AuthController.VerifyOtpController);
 Router.post("/scrape", ScrapingValidation.scrapeValidation, ScrapingController.ScrapeController);
 Router.post("/chat", ChatController.QueryServicesController);
+Router.post("/embed", EmbedController.EmbedAndServiceController);
 
 
 Router.use(UserJwtMiddleWare.VerifyToken);
