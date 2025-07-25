@@ -8,33 +8,35 @@ import customUtility from "../utility/custom.utility.js";
 import EmailTemplates from "../config/app/email.config.js";
 import SendEmail from "../utility/email.utility.js";
 import UserJwtMiddleWare from "../middlewares/jwt..usermiddleware.js";
+import SendSMS from "../utility/sms.utility.js";
 const { GenerateToken } = UserJwtMiddleWare;
 
 const { CustomMessage, GenerateOtp } = customUtility;
 const RegisterOtpService = async (request) => {
   try {
-    const { email } = request.headers;
-    const verifyUser = await AuthDTO.GetUserDTO(email, null);
-    // if (verifyUser.length > 0)
-    //   return CustomMessage(409, "User with this email is already avalilable");
-    const checkOtpExists = await OtpDto.VerifyOtp(email,AppConfig.OTP_TYPES.REGISTER);
-    let otp;
-    if(checkOtpExists.length>0){
-       // return CustomMessage(409,"Otp Already generated Successfully")
-       otp = checkOtpExists[0].otp
-    }
-    else{
-    otp = GenerateOtp();
-    
-     await OtpDto.InsertOtpDTO(
-      otp,
-      null,
+    const { email, mobile, otpType } = request.headers;
+    const checkOtpExists = await OtpDto.VerifyOtp(
       email,
+      mobile,
       AppConfig.OTP_TYPES.REGISTER
     );
-  }
-    const template = EmailTemplates.OTP_TEMPLATE(email.split("@")[0], otp);
-    SendEmail(email, template.subject, template.body);
+    let otp;
+    if (checkOtpExists.length > 0) {
+      otp = checkOtpExists[0].otp;
+    } else {
+      otp = GenerateOtp();
+
+      await OtpDto.InsertOtpDTO(otp, null, email, AppConfig.OTP_TYPES.REGISTER, mobile);
+    }
+    if (email) {
+      const template = EmailTemplates.OTP_TEMPLATE(email.split("@")[0], otp);
+      SendEmail(email, template.subject, template.body);
+    } else {
+      if(checkOtpExists.length === 0){
+      let type = otpType === "sms" ? "q" : "otp";
+      await SendSMS(type, mobile, otp);
+      }
+    }
     return true;
   } catch (error) {
     logger.error({ RegisterOtpService: error.message });
@@ -46,18 +48,17 @@ const VerifyOtpService = async (request) => {
   try {
     const { email, otp } = request.headers;
     const verifyUser = await AuthDTO.GetUserDTO(email, null);
-    const data = await OtpDto.VerifyOtp(email,AppConfig.OTP_TYPES.REGISTER);
+    const data = await OtpDto.VerifyOtp(email, AppConfig.OTP_TYPES.REGISTER);
     if (!data.length > 0) return CustomMessage(410, "Otp Exipred");
-    if (data[0].otp ==otp) {
-      if(verifyUser.length>0){ 
-        const token = await GenerateToken({email:verifyUser[0].email});
-
+    if (data[0].otp == otp) {
+      if (verifyUser.length > 0) {
+        const token = await GenerateToken({ email: verifyUser[0].email });
       }
       return CustomMessage(400, "The Otp entered is incorrect");
     }
     return data;
   } catch (error) {
-    logger.error({VerifyOtpService:error.message});
+    logger.error({ VerifyOtpService: error.message });
     throw new Error(error.message);
   }
 };

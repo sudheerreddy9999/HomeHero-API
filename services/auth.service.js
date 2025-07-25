@@ -14,9 +14,9 @@ const { GenerateToken } = UserJwtMiddleWare;
 
 const GetUserService = async (request) => {
   try {
-    const { email, mobile_number, password, otp } = request.headers;
-    const data = await AuthDTO.GetUserDTO(email, null);
-    const otpData = await OtpDto.VerifyOtp(email, AppConfig.OTP_TYPES.REGISTER);
+    const { email, mobile, otp } = request.headers;
+    const data = await AuthDTO.GetUserDTO(email, mobile);
+    const otpData = await OtpDto.VerifyOtp(email, mobile, AppConfig.OTP_TYPES.REGISTER);
     let newUser = true;
     if (!otpData.length > 0) return CustomMessage(410, "Otp Exipred");
     if (otpData[0].otp !== otp) {
@@ -27,10 +27,10 @@ const GetUserService = async (request) => {
     } else {
       if (data.length === 0) {
         await UsersDto.RegisterNewUserDTO(
-          email.split("@")[0],
+          email?  email.split("@")[0]: mobile,
           null,
           null,
-          null,
+          mobile,
           email,
           null,
           null,
@@ -38,9 +38,12 @@ const GetUserService = async (request) => {
           null,
           "Y"
         );
-        // userData = await AuthDTO.GetUserDTO(email, null);
         newUser = true;
       }
+    }
+    let tokenData = {
+      email: data[0]?.email ?? null,
+      mobile: data[0]?.mobile_number ?? null
     }
     const token = await GenerateToken({ email: data[0].email || email });
     if (!token) {
@@ -100,17 +103,3 @@ const AuthService = { GetUserService, GoogleAuthService };
 
 export default AuthService;
 
-// if (password) {
-//   if (!data[0].password) {
-//     return CustomMessage(404, "Please set the password before logging in or login with otp");
-//   }
-//   const comparePassword = await bcrypt.compare(
-//     password,
-//     data[0].password ?? ""
-//   );
-//   if (!comparePassword) {
-//     return CustomMessage(401, "Invalid Password");
-//   }
-// }
-// delete data[0].password;
-// const userData = await AuthDTO.GetUserDTO(email, null);
