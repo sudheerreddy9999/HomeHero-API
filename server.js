@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import mysql from "./config/database/database.config.js";
 import logger from "./utility/logger.utility.js";
 import UserRouter from "./routes/user.route.js";
+import ServiceRouter from "./routes/services.route.js";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(express.urlencoded({ extended: false }));
 app.use('/user',UserRouter)
 
+app.use('/service',ServiceRouter)
 const mySqlDatabaseConnection = async () => {
   try {
     await mysql.authenticate();

@@ -1,6 +1,6 @@
 "use strict";
 import logger from "../utility/logger.utility.js";
-import queries from "../config/app/query.config.js";
+import DB from "../config/app/query.config.js";
 import mysql from "../config/database/database.config.js";
 import { QueryTypes } from "sequelize";
 
@@ -17,7 +17,7 @@ const RegisterNewUserDTO = async (
   active = "Y"
 ) => {
   try {
-    const query = queries.POST_USER;
+    const query = DB.QUERY.POST_USER;
     const replacements = {
       first_name,
       middle_name,
