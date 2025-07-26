@@ -1,6 +1,5 @@
 "use strict";
 import UsersDto from "../dto/user.dto.js";
-import bcrypt from "bcrypt"
 import AuthDTO from "../dto/auth.dto.js";
 import logger from "../utility/logger.utility.js";
 import customUtility from "../utility/custom.utility.js";
@@ -29,7 +28,7 @@ const RegisterNewUserService = async (request) => {
     if (verifyNewuser.length > 0) {
       return CustomMessage(409, "User Already Exists");
     }
-    const encryptedPassword = await bcrypt.hash(password,12);
+
     await UsersDto.RegisterNewUserDTO(
       first_name,
       middle_name,
@@ -37,7 +36,7 @@ const RegisterNewUserService = async (request) => {
       mobile_number,
       email,
       dob,
-      encryptedPassword,
+      password,
       profile_img,
       gender,
       active

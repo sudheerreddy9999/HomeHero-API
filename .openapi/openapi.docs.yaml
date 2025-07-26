@@ -1,0 +1,123 @@
+openapi: "3.0.0"
+info:
+  title: Home Hero API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: login
+  - name: user
+  - name: services
+paths:
+  /user/login:
+    post:
+      tags:
+        - login
+      description: login API
+      operationId: userLogin
+      parameters:
+        - name: email
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: mobile
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: otp
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: login success
+  /user/google/login:
+    post:
+      tags:
+        - login
+      description: Google login API
+      operationId: userGoogleLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/googleToken"
+      responses:
+        200:
+          description: login success
+  /user/generate/login/otp:
+    get:
+      tags:
+        - login
+      description: Generate otp for login
+      operationId: getnerateOtp
+      parameters:
+        - name: email
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: mobile
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: header
+          required: false
+          schema:
+            enum:
+              - whatsapp
+              - sms
+      responses:
+        200:
+          description: otp sent success
+  /service:
+    get:
+      tags:
+        - services
+      description: get all the services
+      operationId: getServices
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: okay request successfull
+  /service/search:
+    get:
+      tags:
+        - services
+      description: get all the service types
+      operationId: getServiceTypes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: service_id
+          in: header
+          required: false
+          schema:
+            type: integer
+        - name: service_name
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: okay request successfull
+components:
+  schemas:
+    googleToken:
+      type: object
+      properties:
+        googleToken:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

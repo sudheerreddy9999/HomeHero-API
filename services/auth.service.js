@@ -1,6 +1,5 @@
 "use strict";
 import logger from "../utility/logger.utility.js";
-import bcrypt from "bcrypt";
 import CustomUtility from "../utility/custom.utility.js";
 import { OAuth2Client } from "google-auth-library";
 import AuthDTO from "../dto/auth.dto.js";
@@ -12,11 +11,11 @@ import AppConfig from "../config/app/app.config.js";
 const { CustomMessage } = CustomUtility;
 const { GenerateToken } = UserJwtMiddleWare;
 
-const GetUserService = async (request) => {
+const GetUserAuthService = async (request) => {
   try {
     const { email, mobile, otp } = request.headers;
     const data = await AuthDTO.GetUserDTO(email, mobile);
-    const otpData = await OtpDto.VerifyOtp(email, mobile, AppConfig.OTP_TYPES.REGISTER);
+    const otpData = await OtpDto.GetOtpDTO(email, mobile, AppConfig.OTP_TYPES.REGISTER);
     let newUser = true;
     if (!otpData.length > 0) return CustomMessage(410, "Otp Exipred");
     if (otpData[0].otp !== otp) {
@@ -45,13 +44,13 @@ const GetUserService = async (request) => {
       email: data[0]?.email ?? null,
       mobile: data[0]?.mobile_number ?? null
     }
-    const token = await GenerateToken({ email: data[0].email || email });
+    const token = await GenerateToken(tokenData);
     if (!token) {
       return CustomMessage(404, "Error Occured While genrating Token");
     }
     return { ...data[0], token, newUser: newUser };
   } catch (error) {
-    logger.error({ GetUserService: error.message });
+    logger.error({ GetUserAuthService: error.message });
     throw new Error(error.message);
   }
 };
@@ -99,7 +98,7 @@ const GoogleAuthService = async (request) => {
   }
 };
 
-const AuthService = { GetUserService, GoogleAuthService };
+const AuthService = { GetUserAuthService, GoogleAuthService };
 
 export default AuthService;
 

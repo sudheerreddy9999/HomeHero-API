@@ -1,37 +1,24 @@
-"use strict";
+'use strict';
 
-import logger from "../utility/logger.utility.js";
-import OtpService from "../services/otp.service.js";
-import AuthService from "../services/auth.service.js";
+import logger from '../utility/logger.utility.js';
+import OtpService from '../services/otp.service.js';
+import AppConfig from '../config/app/app.config.js';
 
-const InsertOtp = async (request, response) => {
+const { STATUS_MESSAGES } = AppConfig;
+
+const GenerateLoginOtpController = async (request, response) => {
   try {
     const data = await OtpService.RegisterOtpService(request);
     if (data.errorCode) {
-      return response
-        .status(data.errorCode)
-        .json({ message: data.customMessage });
-    }
-    return response.status(200).json({ message: "Otp Sent Successfully" });
-  } catch (error) {
-    logger.error(error.message);
-    return response.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const VerifyOtpController = async (request, response) => {
-  try {
-    const data = await AuthService.GetUserService(request);
-    if (data.errorCode) {
       return response.status(data.errorCode).json({ message: data.customMessage });
     }
-    return response.status(200).json({ message: "Otp Verified Successfully",data:data });
+    return response.status(200).json({ message: 'Otp Sent Successfully' });
   } catch (error) {
-    logger.error({ VerifyOtpController: error.message });
-    return response.status(500).json({ message: "Internal server error" });
+    logger.error({ GenerateLoginOtpController: error.message });
+    return response.status(500).json({ message: STATUS_MESSAGES[500], error: error.message });
   }
 };
 
-const OtpController = { InsertOtp, VerifyOtpController };
+const OtpController = { GenerateLoginOtpController };
 
 export default OtpController;

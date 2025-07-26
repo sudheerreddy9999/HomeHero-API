@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-import logger from "../utility/logger.utility.js";
-import mysql from "../config/database/database.config.js";
-import DB from "../config/app/query.config.js";
-import { QueryTypes } from "sequelize";
+import logger from '../utility/logger.utility.js';
+import mysql from '../config/database/database.config.js';
+import DB from '../config/app/query.config.js';
+import { QueryTypes } from 'sequelize';
 
 const InsertOtpDTO = async (otp, user_id = null, email, otp_type, mobile) => {
   try {
@@ -26,12 +26,12 @@ const InsertOtpDTO = async (otp, user_id = null, email, otp_type, mobile) => {
   }
 };
 
-const VerifyOtp = async (email, mobile, otp_type) => {
+const GetOtpDTO = async (email = NULL, mobile = NULL, otp_type = NULL) => {
   try {
     const query = DB.QUERY.VERIFY_OTP;
     const replacements = {
-      email: email ?? null,
-      mobile: mobile ?? null,
+      email: email ? email : null,
+      mobile: mobile ? mobile :  null,
       otp_type,
     };
     const data = await mysql.query(query, {
@@ -40,11 +40,11 @@ const VerifyOtp = async (email, mobile, otp_type) => {
     });
     return data;
   } catch (error) {
-    logger.error({ VerifyOtpDto: error.message });
+    logger.error({ GetOtpDTO: error.message });
     throw new Error(error.message);
   }
 };
 
-const OtpDto = { InsertOtpDTO, VerifyOtp };
+const OtpDto = { InsertOtpDTO, GetOtpDTO };
 
 export default OtpDto;

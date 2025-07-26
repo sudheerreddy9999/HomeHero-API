@@ -1,43 +1,39 @@
-"use strict";
+'use strict';
 
-import { header, body, validationResult } from "express-validator";
+import { header, body, validationResult } from 'express-validator';
+import AppConfig from '../../config/app/app.config.js';
+
+const {STATUS_MESSAGES} = AppConfig;
 
 const loginValidation = [
-  header("email")
+  header('email').trim().if(header('mobile').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
+  header('mobile').trim().if(header('email').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
+  header('otp')
     .trim()
-    .if(header("mobile_number").isEmpty())
     .notEmpty()
-    .withMessage("Please Enter Email Or MobileNumber"),
-  header("mobile_number")
-    .trim()
-    .if(header("email").isEmpty())
-    .notEmpty()
-    .withMessage("Please Enter Email Or MobileNumber"),
-  header("password")
-    .trim()
-    .if(header("otp").isEmpty())
-    .notEmpty()
-    .withMessage("Please Enter Valid Password")
-    .isLength({ min: 4, max: 16 })
-    .withMessage("Password Should be within 4 to 16 characters"),
-    header("otp")
-    .trim()
-    .if(header("password").isEmpty())
-    .notEmpty()
-    .withMessage("Please Enter Valid Password")
-    .isLength({ min: 4, max: 4 })
-    .withMessage("Password Should be within 4 to 16 characters"),
+    .withMessage('Enter valid otp')
+    .isLength({ min: 5, max: 5 })
+    .withMessage('Enter valid otp with 5 digits'),
   (request, response, next) => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
-      return response
-        .status(400)
-        .json({ message: "Bad Request", error: errors });
+      return response.status(400).json({ message: STATUS_MESSAGES[400], error: errors });
     }
     next();
   },
 ];
 
-const AuthValidation = { loginValidation };
+const googleLoginValidation = [
+  body('googletoken').trim().notEmpty().withMessage('Enter valid googletoken'),
+  (request, response, next) => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).json({ message: STATUS_MESSAGES[400], error: errors });
+    }
+    next();
+  },
+];
+
+const AuthValidation = { loginValidation,googleLoginValidation };
 
 export default AuthValidation;
