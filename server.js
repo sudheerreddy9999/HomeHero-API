@@ -24,6 +24,7 @@ app.use(`${API_PREFIX}/user`, UserRouter);
 app.use(`${API_PREFIX}/service`, ServiceRouter);
 
 app.use((request, response)=> {
+  logger.warn({RouteNotFound:`Invalid route${request.originalUrl}`})
   return response.status(404).json({message: STATUS_MESSAGES[404], error: 'Invalid api route'})
 })
 const mySqlDatabaseConnection = async () => {

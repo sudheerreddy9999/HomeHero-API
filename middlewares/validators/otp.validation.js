@@ -10,7 +10,7 @@ const loginGetOtpValidation = [
   header('mobile').trim().if(header('email').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
   header('type')
     .trim()
-    .if(header('mobile').isEmpty())
+    .if(header('email').isEmpty())
     .isIn(['sms','whatsapp'])
     .withMessage('Enter valid otp type'),
   (request, response, next) => {
