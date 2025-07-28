@@ -20,6 +20,15 @@ const STATUS_MESSAGES = {
   503: 'Service Unavailable - Server overloaded or down.',
 };
 
+const SkipAuthURL = [
+  '/api/v1/service',
+  '/api/v1/service/search',
+  '/api/v1/user/generate/login/otp',
+  '/api/v1/user/login',
+  '/api/v1/user/google/login'
+
+]
+
 const AppConfig = {
   PORT: process.env.PORT,
   JWT_SECRETKEY_USER: process.env.JWT_SECRETKEY_USER,
@@ -32,6 +41,7 @@ const AppConfig = {
   STATUS_MESSAGES: STATUS_MESSAGES,
   OPENAPI_PATH: process.env.OPENAPI_PATH,
   API_PREFIX: process.env.API_PREFIX,
+  SKIP_AUTH_URL: SkipAuthURL,
 };
 
 export default AppConfig;

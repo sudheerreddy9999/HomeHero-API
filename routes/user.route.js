@@ -8,10 +8,11 @@ import UserJwtMiddleWare from '../middlewares/jwt..usermiddleware.js';
 import customUtility from '../utility/custom.utility.js';
 import AuthValidation from '../middlewares/validators/auth.validation.js';
 import OtpValidation from '../middlewares/validators/otp.validation.js';
+import ReqResLoggerMiddleware from '../middlewares/reqres.logger.middleware.js';
 
 const Router = express.Router();
 
-Router.use(customUtility.SetTimeZone);
+Router.use(customUtility.SetTimeZone,UserJwtMiddleWare.VerifyToken, ReqResLoggerMiddleware);
 
 Router.get('/generate/login/otp', OtpValidation.loginGetOtpValidation, OtpController.GenerateLoginOtpController);
 
@@ -19,7 +20,7 @@ Router.post('/login', AuthValidation.loginValidation, AuthController.GetAuthCont
 
 Router.post('/google/login', AuthValidation.googleLoginValidation, AuthController.GetGoogleAuthController);
 
-Router.use(UserJwtMiddleWare.VerifyToken);
+//Router.use(UserJwtMiddleWare.VerifyToken);
 
 Router.get('/details', UserController.GetUserDetailsContoller);
 

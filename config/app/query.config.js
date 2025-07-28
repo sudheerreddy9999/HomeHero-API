@@ -12,6 +12,9 @@ const QUERY = {
   GET_USER: process.env.GET_USER,
   INSERT_OTP: process.env.INSERT_OTP,
   VERIFY_OTP: process.env.VERIFY_OTP,
+  POST_REQUEST: process.env.POST_REQUEST,
+  UPDATE_RESPONSE: process.env.UPDATE_RESPONSE,
+  
 };
 
 const DB = {
