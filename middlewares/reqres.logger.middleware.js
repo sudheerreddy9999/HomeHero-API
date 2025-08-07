@@ -22,7 +22,7 @@ const ReqResLoggerMiddleware = async (req, res, next) => {
       const OriginalSend = res.send;
 
       res.send = async function (body) {
-        const response = body ? JSON.stringify(body) : '';
+        const response = body ? body : ''
         await ReqResLoggerDTO.UpdateResponseDTO(response, requestId);
         return OriginalSend.call(this, body);
       };

@@ -20,7 +20,6 @@ Router.get(
   ServicesController.GetSearchServiceTypesController,
 );
 
-//user validation
-//Router.use(UserJwtMiddleWare.VerifyToken);
+Router.get('/random', ServicesController.GetRandomServiceTypesController);
 
 export default Router;

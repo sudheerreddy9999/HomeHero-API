@@ -109,6 +109,17 @@ paths:
       responses:
         200:
           description: okay request successfull
+  /service/random:
+    get:
+      tags:
+        - services
+      description: get random service types
+      operationId: getrandomServiceTypes
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: okay request successfull
 components:
   schemas:
     googleToken:

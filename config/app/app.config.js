@@ -23,6 +23,7 @@ const STATUS_MESSAGES = {
 const SkipAuthURL = [
   '/api/v1/service',
   '/api/v1/service/search',
+  '/api/v1/service/random',
   '/api/v1/user/generate/login/otp',
   '/api/v1/user/login',
   '/api/v1/user/google/login'

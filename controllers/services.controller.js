@@ -26,8 +26,19 @@ const GetSearchServiceTypesController = async (request, response) => {
   }
 };
 
+const GetRandomServiceTypesController = async (request, response) => {
+  try {
+    const data = await ServicesService.GetRandomServiceTypesService(request);
+    return response.status(200).json({ message: STATUS_MESSAGES[200], data: data });
+  } catch (error) {
+    logger.error({ GetRandomServiceTypesController: error.message });
+    return response.status(500).json({ message: STATUS_MESSAGES[500], error: error.message });
+  }
+};
+
 const ServicesController = {
   GetServicesController,
   GetSearchServiceTypesController,
+  GetRandomServiceTypesController,
 };
 export default ServicesController;

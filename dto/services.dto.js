@@ -33,5 +33,16 @@ const GetSearchServiceTypesDTO = async (service_id, service_name) => {
   }
 };
 
-const ServicesDTO = { GetServicesDTO, GetSearchServiceTypesDTO };
+const GetRandomServiceTypesDTO = async () => {
+  try {
+    const sp = DB.SP.GET_RANDOM_SERVICE_ITEMS;
+
+    const rData = await mysql.query(sp);
+    return rData;
+  } catch (error) {
+    logger.error({ GetRandomServiceTypesDTO: error.message });
+    throw new Error(error);
+  }
+};
+const ServicesDTO = { GetServicesDTO, GetSearchServiceTypesDTO, GetRandomServiceTypesDTO };
 export default ServicesDTO;

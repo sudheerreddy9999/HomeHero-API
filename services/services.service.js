@@ -24,5 +24,15 @@ const GetSearchServiceTypesService = async (request) => {
   }
 };
 
-const ServicesService = { GetServicesService, GetSearchServiceTypesService };
+const GetRandomServiceTypesService = async () => {
+  try {
+    const data = await ServicesDTO.GetRandomServiceTypesDTO();
+    return data;
+  } catch (error) {
+    logger.error({ GetRandomServiceTypesService: error.message });
+    throw new Error(error.message);
+  }
+};
+
+const ServicesService = { GetServicesService, GetSearchServiceTypesService,GetRandomServiceTypesService };
 export default ServicesService;

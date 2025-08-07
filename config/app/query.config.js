@@ -5,6 +5,7 @@ dotenv.config();
 const SP = {
   GET_SERVICES: process.env.GET_SERVICES,
   GET_SERVICE_ITEMS: process.env.GET_SERVICE_ITEMS,
+  GET_RANDOM_SERVICE_ITEMS: process.env.GET_RANDOM_SERVICE_ITEMS,
 };
 
 const QUERY = {
