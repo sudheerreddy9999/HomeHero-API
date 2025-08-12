@@ -6,7 +6,7 @@ import AppConfig from '../../config/app/app.config.js';
 const {STATUS_MESSAGES} = AppConfig;
 
 const loginValidation = [
-  header('email').trim().if(header('mobile').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
+  // header('email').trim().if(header('mobile').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
   // header('mobile').trim().if(header('email').isEmpty()).notEmpty().withMessage('Please Enter Email Or MobileNumber'),
   header('otp')
     .trim()
