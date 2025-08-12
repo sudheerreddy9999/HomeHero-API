@@ -16,7 +16,7 @@ Router.use(customUtility.SetTimeZone,UserJwtMiddleWare.VerifyToken, ReqResLogger
 
 Router.get('/generate/login/otp', OtpValidation.loginGetOtpValidation, OtpController.GenerateLoginOtpController);
 
-Router.post('/login', AuthValidation.loginValidation, AuthController.GetAuthController);
+Router.post('/login', AuthController.GetAuthController);
 
 Router.post('/google/login', AuthValidation.googleLoginValidation, AuthController.GetGoogleAuthController);
 
