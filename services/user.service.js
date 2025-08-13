@@ -58,7 +58,7 @@ const RegisterNewUserService = async (request) => {
 
 const GetUserDeatilsService = async (request)=>{
   try {
-    const email = request.email
+    const {email} = request.headers;
     const data = await AuthDTO.GetUserDTO(email,null);
     if(!data.length>0){
       return CustomMessage(404,"User Not Found");
