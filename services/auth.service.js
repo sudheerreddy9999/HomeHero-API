@@ -13,7 +13,7 @@ const { GenerateToken } = UserJwtMiddleWare;
 
 const GetUserAuthService = async (request) => {
   try {
-    const { email, mobile, otp } = request.headers;
+    const { email, mobile, otp } = request.body;
     const data = await AuthDTO.GetUserDTO(email, mobile);
     const otpData = await OtpDto.GetOtpDTO(email, mobile, AppConfig.OTP_TYPES.REGISTER);
     let newUser = true;

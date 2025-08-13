@@ -12,11 +12,12 @@ import ReqResLoggerMiddleware from '../middlewares/reqres.logger.middleware.js';
 
 const Router = express.Router();
 
-Router.use(customUtility.SetTimeZone,UserJwtMiddleWare.VerifyToken, ReqResLoggerMiddleware);
+// Router.use(customUtility.SetTimeZone,UserJwtMiddleWare.VerifyToken, ReqResLoggerMiddleware);
+Router.use(customUtility.SetTimeZone, ReqResLoggerMiddleware);
 
 Router.get('/generate/login/otp', OtpValidation.loginGetOtpValidation, OtpController.GenerateLoginOtpController);
 
-Router.post('/login', AuthController.GetAuthController);
+Router.post('/login/google/otp', AuthController.GetAuthController);
 
 Router.post('/google/login', AuthValidation.googleLoginValidation, AuthController.GetGoogleAuthController);
 

@@ -26,7 +26,7 @@ const InsertOtpDTO = async (otp, user_id = null, email, otp_type, mobile) => {
   }
 };
 
-const GetOtpDTO = async (email = NULL, mobile = NULL, otp_type = NULL) => {
+const GetOtpDTO = async (email = null, mobile = null, otp_type = null) => {
   try {
     const query = DB.QUERY.VERIFY_OTP;
     const replacements = {
