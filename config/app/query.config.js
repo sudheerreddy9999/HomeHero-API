@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -15,7 +15,9 @@ const QUERY = {
   VERIFY_OTP: process.env.VERIFY_OTP,
   POST_REQUEST: process.env.POST_REQUEST,
   UPDATE_RESPONSE: process.env.UPDATE_RESPONSE,
-  
+  INSERT_CART_ITEM: process.env.INSERT_CART_ITEM,
+  GET_CART_ITEMS: process.env.GET_CART_ITEMS,
+  DELETE_CART_ITEM: process.env.DELETE_CART_ITEM,
 };
 
 const DB = {
