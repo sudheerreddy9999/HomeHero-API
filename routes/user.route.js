@@ -21,7 +21,7 @@ Router.post('/login/google/otp', AuthController.GetAuthController);
 
 Router.post('/google/login', AuthValidation.googleLoginValidation, AuthController.GetGoogleAuthController);
 
-//Router.use(UserJwtMiddleWare.VerifyToken);
+Router.use(UserJwtMiddleWare.VerifyToken);
 
 Router.get('/details', UserController.GetUserDetailsContoller);
 
