@@ -22,6 +22,7 @@ Router.get(
 );
 
 Router.get('/random', ServicesController.GetRandomServiceTypesController);
+Router.use(UserJwtMiddleWare.VerifyToken);
 Router.post('/cart/add', CartController.InsertCartItemController);
 Router.get('/cart/items', CartController.GetCartItemsController);
 Router.delete('/cart/delete', CartController.DeleteItemController);

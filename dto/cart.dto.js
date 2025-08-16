@@ -26,7 +26,9 @@ const GetCartItemsDto = async (user_id) => {
       user_id: user_id ?? null,
     };
     const data = await mysql.query(getCartQuery, { replacements, type: QueryTypes.SELECT });
-    return data;
+    if (Array.isArray(data)) {
+      return Object.values(data[0]);
+    }
   } catch (error) {
     logger.error({ GetCartItemsDto: error.message });
     throw new Error(error);

@@ -1,7 +1,7 @@
-"use strict";
-import jwt from "jsonwebtoken";
-import AppConfig from "../config/app/app.config.js";
-import logger from "../utility/logger.utility.js";
+'use strict';
+import jwt from 'jsonwebtoken';
+import AppConfig from '../config/app/app.config.js';
+import logger from '../utility/logger.utility.js';
 
 const { JWT_SECRETKEY_USER, JWT_USER_EXPIRY, SKIP_AUTH_URL } = AppConfig;
 
@@ -19,23 +19,20 @@ const GenerateToken = async (data) => {
 
 const VerifyToken = async (request, response, next) => {
   try {
-    if(!SKIP_AUTH_URL.includes(request.originalUrl)){
-    let token = request.get("Authorization");
-    if (!token) {
-      return response
-        .status(403)
-        .json({ message: "Forbidden You Don't have Access" });
+    if (!SKIP_AUTH_URL.includes(request.originalUrl)) {
+      let token = request.get('Authorization');
+      if (!token) {
+        return response.status(403).json({ message: "Forbidden You Don't have Access" });
+      }
+      token = request.get('Authorization').split(' ')[1];
+      const decodedToken = jwt.verify(token, JWT_SECRETKEY_USER);
+      request.email = decodedToken.email;
+      request.user_id = decodedToken.user_id;
     }
-    token = request.get("Authorization").split(" ")[1];
-    const decodedToken = jwt.verify(token, JWT_SECRETKEY_USER);
-    request.email = decodedToken.email;
-  }
     next();
   } catch (error) {
     logger.error(error.message);
-    return response
-      .status(403)
-      .json({ message: "Forbidden You Don't have Access" });
+    return response.status(403).json({ message: "Forbidden You Don't have Access" });
   }
 };
 

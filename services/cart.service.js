@@ -8,7 +8,8 @@ const { CustomMessage } = customUtility;
 
 const InsertCartItemService = async (request) => {
   try {
-    const { user_id, service_id } = request.body;
+    const user_id = request.user_id;
+    const { service_id } = request.body;
     const response = await CartDTO.PostCartItem(user_id, service_id);
     if (!response) {
       return CustomMessage(400, 'Error While Inserting cart Item');
@@ -22,7 +23,7 @@ const InsertCartItemService = async (request) => {
 
 const GetCartItemsService = async (request) => {
   try {
-    const { user_id } = request.headers;
+    const user_id = request.user_id;
     const response = await CartDTO.GetCartItemsDto(Number(user_id));
     if (!response) {
       return CustomMessage(400, 'Error While Getting Items');
@@ -36,7 +37,8 @@ const GetCartItemsService = async (request) => {
 
 const DeleteCartItemsService = async (request) => {
   try {
-    const { user_id, service_id } = request.body;
+    const user_id = request.user_id;
+    const { service_id } = request.body;
     const response = await CartDTO.DeleteCartItemDto(user_id, service_id);
     if (!response) {
       return CustomMessage(400, 'Error While Deleting the Item');
