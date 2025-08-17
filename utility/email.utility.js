@@ -19,7 +19,6 @@ const SendEmail = async (toMail,subject,body) => {
         subject:subject,
         html:body
     }
-    console.log(body,"Body s")
     const data = await transporter.sendMail(mailOptions);
     return data;
   } catch (error) {
