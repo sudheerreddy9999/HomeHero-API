@@ -1,6 +1,9 @@
 'use strict';
 import CartService from '../services/cart.service.js';
 import logger from '../utility/logger.utility.js';
+import AppConfig from '../config/app/app.config.js';
+
+const { STATUS_MESSAGES } = AppConfig;
 
 const InsertCartItemController = async (request, response) => {
   try {
@@ -21,7 +24,7 @@ const GetCartItemsController = async (request, response) => {
     if (data?.errorCode) {
       return response.status(data.errorCode).json({ message: data.customMessage });
     }
-    return response.status(200).json({ data: data });
+    return response.status(200).json({message: STATUS_MESSAGES[200], data: data });
   } catch (error) {
     logger.error({ GetCartItemsController: error.message });
     return response.status(500).json({ message: 'Internal Server Error' });

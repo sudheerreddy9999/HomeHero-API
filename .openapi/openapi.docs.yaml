@@ -112,10 +112,10 @@ paths:
           description: okay request successfull
 components:
   schemas:
-    googletoken:
+    googleToken:
       type: object
       properties:
-        googleToken:
+        googletoken:
           type: string
     login:
       type: object
