@@ -14,7 +14,7 @@ const { GenerateToken } = UserJwtMiddleWare;
 const GetUserAuthService = async (request) => {
   try {
     const { email, mobile, otp } = request.body;
-    const data = await AuthDTO.GetUserDTO(email, mobile);
+    let data = await AuthDTO.GetUserDTO(email, mobile);
     const otpData = await OtpDto.GetOtpDTO(email, mobile, AppConfig.OTP_TYPES.REGISTER);
     let newUser = true;
     if (!otpData.length > 0) return CustomMessage(410, 'Otp Exipred');
@@ -38,12 +38,10 @@ const GetUserAuthService = async (request) => {
           'Y',
         );
         newUser = true;
+        data = await  AuthDTO.GetUserDTO(email, mobile)
       }
     }
-    // let tokenData = {
-    //   email: data[0]?.email ?? null,
-    //   mobile: data[0]?.mobile_number ?? null
-    // }
+
     delete data[0].password;
     const token = await GenerateToken(data[0]);
     if (!token) {

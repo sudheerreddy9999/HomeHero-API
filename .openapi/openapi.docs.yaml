@@ -15,22 +15,12 @@ paths:
         - login
       description: login API
       operationId: userLogin
-      parameters:
-        - name: email
-          in: header
-          required: false
-          schema:
-            type: string
-        - name: mobile
-          in: header
-          required: false
-          schema:
-            type: string
-        - name: otp
-          in: header
-          required: false
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/login"
       responses:
         200:
           description: login success
@@ -122,10 +112,19 @@ paths:
           description: okay request successfull
 components:
   schemas:
-    googleToken:
+    googletoken:
       type: object
       properties:
         googleToken:
+          type: string
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+        mobile:
+          type:  string
+        otp: 
           type: string
   securitySchemes:
     BearerAuth:

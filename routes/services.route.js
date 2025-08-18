@@ -11,7 +11,7 @@ import CartController from '../controllers/cart.controller.js';
 const Router = express.Router();
 
 //To set mysql time zone
-// Router.use(customUtility.SetTimeZone, UserJwtMiddleWare.VerifyToken, ReqResLoggerMiddleware);
+ Router.use(customUtility.SetTimeZone, UserJwtMiddleWare.VerifyToken, ReqResLoggerMiddleware);
 
 Router.get('/', ServicesController.GetServicesController);
 
@@ -22,9 +22,11 @@ Router.get(
 );
 
 Router.get('/random', ServicesController.GetRandomServiceTypesController);
-Router.use(UserJwtMiddleWare.VerifyToken);
+
 Router.post('/cart/add', CartController.InsertCartItemController);
+
 Router.get('/cart/items', CartController.GetCartItemsController);
+
 Router.delete('/cart/delete', CartController.DeleteItemController);
 
 export default Router;
